@@ -6,7 +6,7 @@ type UdpSocket = ();
 type IpAddr = String;
 type Port = u16;
 
-// Rust has 4 types of grouping values: tuples, unions, enums, and structs
+// Rust has 4 types for grouping values: tuples, unions, enums, and structs
 // We wont be looking at unions as they are rather rare and not useful in a "safe" context
 
 // Lets start off with the most conventional grouping type: structs
@@ -18,7 +18,7 @@ type Port = u16;
 // They can be used similar to enums in other languages where
 // it as a type can only ever have one of a set of values
 #[derive(Debug)]
-enum MaritalStatus {
+pub enum MaritalStatus {
     Single,
     Married,
     Divorced,
@@ -29,7 +29,7 @@ enum MaritalStatus {
 // Fields are private to a module by default, we can make them public by adding the pub keyword
 // Rust has no concept of inheritance
 #[derive(Debug)]
-struct Person {
+pub struct Person {
     pub name: String,
     age: u8,
     marital_status: MaritalStatus,
@@ -57,7 +57,7 @@ type EndPoint = (IpAddr, Port);
 
 // Ok, now lets define some basic behavior for a struct
 // Simple as can be
-struct ManagedUpdSocket {
+pub struct ManagedUpdSocket {
     socket: UdpSocket,
     status: SocketStatus,
 }
@@ -68,7 +68,7 @@ impl ManagedUpdSocket {
     // Instead we define a function that returns an instance of the struct
     // It is idiomatic to name this function new and have it return Self
     // In the context of a struct Self is the type we are implementing on
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             socket: (),
             status: SocketStatus::Init,
@@ -78,20 +78,20 @@ impl ManagedUpdSocket {
     // We can also define methods that take a reference to self
     // This is similar to the this pointer in other languages
     // As we want to change the state of the struct we take a mutable reference
-    fn open(&mut self) {
+    pub fn open(&mut self) {
         self.status = SocketStatus::Open(());
     }
 
     // Alternatively we can take ownership of self
     // This is useful when we want to consume the struct
     // The concept of of ownership will be covered in the next chapter
-    fn close(mut self) {
+    pub fn close(mut self) {
         // We can't use self after this line
         self.status = SocketStatus::Closed;
     }
 
     // Finally we take advantage of our state
-    fn send(&mut self, person: &Person, end_point: &EndPoint) -> Result<(), String> {
+    pub fn send(&mut self, person: &Person, end_point: &EndPoint) -> Result<(), String> {
         // We can match on the status of the socket
         // Ignore the & for now
         // The match statement is similar to a switch statement in other languages

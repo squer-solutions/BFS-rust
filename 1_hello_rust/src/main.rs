@@ -12,34 +12,50 @@ fn main() {
     // We can also specify the type of a variable and not initialize it
     let y: i32;
 
+    // We can't use y here because it is not initialized
+    // let z = y + 1; // This will not compile
+
     // And assign it later
     y = 2;
 
+    // But we cannot reassign it
+    // y = 3; // This will not compile
+
     // Numeric operations are done with the usual operators
-    let z = x + y;
+    let mut z = x + y;
 
     // This is a macro, not a function Macros come in two flavors: declarative and procedural
     // For now we don't really care how or why they work
     println!("Hello, world! I just calculated x + y and it is: {}", z);
 
-    // x = 2; // This will not compile because x is immutable
-    let x = 2; // This creates a new variable x that shadows the previous one
-    println!("The value of the new x is: {}", x); // Will print 2
+    // Because we used mut we can reassign z
+    z = 4;
+    println!("I reassigned z and it now stores: {}", z);
+
+    // This creates a new variable x that shadows the previous one
+    // Logically the old x is still in scope, but lexically it impossible to access it
+    let x = 22;
+    println!("The value of the new x is: {}", x); // Will print 22
 
     // We can create arbitrary scopes
     {
+        // We can access values from the enclosing scope
+        println!("The value of x in the new scope is: {}", x); // Will print 22
+
+        // We can also shadow the value of x
         let x = 3;
-        println!("The value of x in the new scope is: {}", x); // Will print 3
+        println!("The new value of x in the new scope is: {}", x); // Will print 3
     }
 
-    println!("The value of x outside the scope is still: {}", x); // Will print 2
+    // The x from the scope exists neither logically nor lexically in the outer scope
+    println!("The value of x outside the scope is still: {}", x); // Will print 22
 
     // Scopes are evaluated
     let scope_result = {
         // Static strings from our code are of type &'static str
         // We can convert them to a String with the to_string() method
         // The difference between a &str and a String is that the former is a reference to a string
-        // and the latter is a heap-allocated string
+        // and the latter is a heap-allocated string that can be mutated
         let a = "Hello";
         let b = "World";
         // Notice how we don't need the return keyword, the last expression in a block is the return
