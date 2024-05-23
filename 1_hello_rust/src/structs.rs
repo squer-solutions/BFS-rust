@@ -136,6 +136,9 @@ impl ManagedUpdSocket {
 }
 
 // Now lets put this all to use
+// Here we define a function that will use the structs we defined
+// It has no parameters and returns a String
+// It is also public
 pub fn my_function() -> String {
     // Let's create a new Person
     let person = Person {
