@@ -5,7 +5,7 @@ fn main() {
     // We don't have to specify a type as Rust uses type inference similar but not as
     // powerful as the Hindley–Milner type system (used in Haskell)
 
-    // Rust uses a best effort approach to infer the type of a variable, by default integers are i32
+    // Rust uses a best effort approach to infer the type of variables, by default integers are i32
     // and floats are f64
     let x = 1;
 
@@ -66,7 +66,7 @@ fn main() {
 
     println!("The result of the scope is: {}", scope_result); // Will print "HelloWorld"
 
-    // Lets now do two things at once:
+    // Let's now do two things at once:
     // Call a function from another module
     let result = structs::my_function();
 
@@ -74,5 +74,5 @@ fn main() {
 }
 
 // This is how we import a module
-// A module is either a file or a directory with an `mod.rs` file
+// Such a module is either a file or a directory with an `mod.rs` file
 mod structs;

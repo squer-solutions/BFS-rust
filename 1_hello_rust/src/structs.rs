@@ -7,10 +7,10 @@ type IpAddr = String;
 type Port = u16;
 
 // Rust has 4 types for grouping values: tuples, unions, enums, and structs
-// We wont be looking at unions as they are rather rare and not useful in a "safe" context
+// We won't be looking at unions as they are rather rare and not useful in a "safe" context
 
-// Lets start off with the most conventional grouping type: structs
-// Structs are similar to classes in other languages, they group data together
+// Let's start off with the most conventional grouping type: structs
+// They are similar to classes in other languages, they group data together
 // In memory they are stored as a contiguous block of memory
 
 // The first type of grouping is an enum
@@ -50,12 +50,12 @@ enum SocketStatus {
 }
 
 // The final grouping type is a tuple
-// It is rarely usually declared as a return type of a function or used as a generic parameter
+// It is rarely usually declared as a return type of function or used as a generic parameter
 // We can however create a type alias
 // In future use they Point type will mean a tuple of two i32 values
 type EndPoint = (IpAddr, Port);
 
-// Ok, now lets define some basic behavior for a struct
+// Ok, now let's define some basic behavior for a struct
 // Simple as can be
 pub struct ManagedUpdSocket {
     socket: UdpSocket,
@@ -76,7 +76,7 @@ impl ManagedUpdSocket {
     }
 
     // We can also define methods that take a reference to self
-    // This is similar to the this pointer in other languages
+    // This is similar to the pointer in other languages
     // As we want to change the state of the struct we take a mutable reference
     pub fn open(&mut self) {
         self.status = SocketStatus::Open(());
@@ -84,7 +84,7 @@ impl ManagedUpdSocket {
 
     // Alternatively we can take ownership of self
     // This is useful when we want to consume the struct
-    // The concept of of ownership will be covered in the next chapter
+    // The concept of ownership will be covered in the next chapter
     pub fn close(mut self) {
         // We can't use self after this line
         self.status = SocketStatus::Closed;
@@ -104,22 +104,22 @@ impl ManagedUpdSocket {
                 // This is the only scope that we can use the socket in
 
                 // And for the sake of the example we will check if the person is too young
-                // and habe the socket go into an error state if they are
+                // and have the socket go into an error state if they are
                 if person.age < 18 {
                     self.status = SocketStatus::Error {
                         error: "Person was too young to send".to_string(),
                         code: 1,
                     };
-                    // Here we need an explicit return. We could omit it
-                    // but then we would need to put the Ok(()) into an else block and omit the ;
-                    // That would make the return type of the if expression a Result<(), String>
+                    // Here we need an explicit return. We could omit it,
+                    // but then we would need to put the Ok(()) into an else block and omit the semicolon
+                    // That would make the return type of the "if expression" a Result<(), String>
                     return Err("Person is too young to send".to_string());
                 }
 
                 // Let utilize the tuple we got
                 let (ip, port) = end_point;
 
-                // But we don't have a real socket so we will just return Ok
+                // But we don't have a real socket, so we will just return Ok
                 println!(
                     "Sending person: {:?} using socket {:?} to {}:{}",
                     person, socket, ip, port
@@ -137,14 +137,14 @@ impl ManagedUpdSocket {
 
 // Now lets put this all to use
 pub fn my_function() -> String {
-    // Lets create a new Person
+    // Let's create a new Person
     let person = Person {
         name: "John Doe".to_string(),
         age: 30,
         marital_status: MaritalStatus::Single,
     };
 
-    // Lets create a new socket
+    // Let's create a new socket
     let mut socket = ManagedUpdSocket::new();
 
     // And create a new endpoint
@@ -156,7 +156,7 @@ pub fn my_function() -> String {
         Err(e) => println!("Failed to send person: {}", e),
     }
 
-    // Lets open the socket
+    // Let's open the socket
     socket.open();
 
     // Try to send the person again
@@ -184,10 +184,10 @@ pub fn my_function() -> String {
         Err(e) => println!("Failed to send person: {}", e),
     }
 
-    // Lets close the socket
+    // Let's close the socket
     socket.close();
 
-    // Well, thats it for now. Lets return something nice to the main function
+    // Well, that's it for now. Let's return something nice to the main function
 
     "Hello from a function in a module".to_string()
 }
