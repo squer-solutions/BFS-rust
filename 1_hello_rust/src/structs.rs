@@ -3,6 +3,8 @@
 // For the purposes of this example we will declare a couple of type aliases
 // We do this to not have to instantiate the actual types (that would needlessly complicate the example)
 type UdpSocket = ();
+type IpAddr = String;
+type Port = u16;
 
 // Rust has 4 types of grouping values: tuples, unions, enums, and structs
 // We wont be looking at unions as they are rather rare and not useful in a "safe" context
@@ -89,7 +91,7 @@ impl ManagedUpdSocket {
     }
 
     // Finally we take advantage of our state
-    fn send(&mut self, person: &Person) -> Result<(), String> {
+    fn send(&mut self, person: &Person, end_point: &EndPoint) -> Result<(), String> {
         // We can match on the status of the socket
         // Ignore the & for now
         // The match statement is similar to a switch statement in other languages
@@ -114,8 +116,14 @@ impl ManagedUpdSocket {
                     return Err("Person is too young to send".to_string());
                 }
 
+                // Let utilize the tuple we got
+                let (ip, port) = end_point;
+
                 // But we don't have a real socket so we will just return Ok
-                println!("Sending person: {:?} using socket {:?}", person, socket);
+                println!(
+                    "Sending person: {:?} using socket {:?} to {}:{}",
+                    person, socket, ip, port
+                );
                 Ok(())
             }
             SocketStatus::Error { error, code } => Err(format!(
@@ -139,8 +147,11 @@ pub fn my_function() -> String {
     // Lets create a new socket
     let mut socket = ManagedUpdSocket::new();
 
+    // And create a new endpoint
+    let end_point: EndPoint = ("localhost".to_string(), 8080);
+
     // Try to send the person
-    match socket.send(&person) {
+    match socket.send(&person, &end_point) {
         Ok(_) => println!("Person was sent successfully"),
         Err(e) => println!("Failed to send person: {}", e),
     }
@@ -149,7 +160,7 @@ pub fn my_function() -> String {
     socket.open();
 
     // Try to send the person again
-    match socket.send(&person) {
+    match socket.send(&person, &end_point) {
         Ok(_) => println!("Person was sent successfully"),
         Err(e) => println!("Failed to send person: {}", e),
     }
@@ -162,13 +173,13 @@ pub fn my_function() -> String {
     };
 
     // Try to send the person again
-    match socket.send(&young_person) {
+    match socket.send(&young_person, &end_point) {
         Ok(_) => println!("Person was sent successfully"),
         Err(e) => println!("Failed to send person: {}", e),
     }
 
     // Even if we try to send an appropriate person the socket is in an error state
-    match socket.send(&person) {
+    match socket.send(&person, &end_point) {
         Ok(_) => println!("Person was sent successfully"),
         Err(e) => println!("Failed to send person: {}", e),
     }
