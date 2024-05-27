@@ -190,6 +190,18 @@ pub fn my_function() -> String {
     // Let's close the socket
     socket.close();
 
+    // And finally, you can deconstruct a struct
+    let Person {
+        name,
+        age,
+        marital_status,
+    } = person;
+
+    println!(
+        "The person is called {}, is {} years old and is {:?}",
+        name, age, marital_status
+    );
+
     // Well, that's it for now. Let's return something nice to the main function
 
     "Hello from a function in a module".to_string()
