@@ -71,13 +71,12 @@ fn main() {
     traits::trait_fun();
     generics::generic_fun();
 
-    let result = structs::my_function();
-
-    println!("The result of the function is: {}", result); // Will print "Hello from a function in a module"
+    structs::structured_fun();
 }
 
 // This is how we import a module
 // Such a module is either a file or a directory with an `mod.rs` file
+mod enums;
 mod generics;
 mod structs;
 mod traits;

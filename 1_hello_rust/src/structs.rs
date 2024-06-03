@@ -1,208 +1,100 @@
-// Welcome to the structs module!
+pub fn structured_fun() {
+    // Here we will be looking at how structs work in Rust
+    // Structs allow you to create complex data structures
+    // They are similar to classes in other languages
 
-// For the purposes of this example we will declare a couple of type aliases
-// We do this to not have to instantiate the actual types (that would needlessly complicate the example)
-type UdpSocket = ();
-type IpAddr = String;
-type Port = u16;
+    // We can create a struct like this
+    struct User {
+        username: String,
+        email: String,
+        sign_in_count: u64,
+        active: bool,
+    }
 
-// Rust has 4 types for grouping values: tuples, unions, enums, and structs
-// We won't be looking at unions as they are rather rare and not useful in a "safe" context
+    // We can create an instance of the struct like this
+    let user1 = User {
+        email: "office@squer.io".to_string(),
+        username: "squer".to_string(),
+        active: true,
+        sign_in_count: 1,
+    };
 
-// Let's start off with the most conventional grouping type: structs
-// They are similar to classes in other languages, they group data together
-// In memory they are stored as a contiguous block of memory
+    // We can access the fields of the struct like this
+    println!("The username of the user is: {}", user1.username);
 
-// The first type of grouping is an enum
-// Enums are a way to group related values together
-// They can be used similar to enums in other languages where
-// it as a type can only ever have one of a set of values
-#[derive(Debug)]
-pub enum MaritalStatus {
-    Single,
-    Married,
-    Divorced,
-    Widowed,
-}
+    // We can destructure the struct like this
+    let User {
+        email,
+        username,
+        active,
+        sign_in_count,
+    } = user1;
 
-// Here we declare a struct with two fields: name and age
-// Fields are private to a module by default, we can make them public by adding the pub keyword
-// Rust has no concept of inheritance
-#[derive(Debug)]
-pub struct Person {
-    pub name: String,
-    age: u8,
-    marital_status: MaritalStatus,
-}
+    // Now we can use the variables
+    println!("The email of the user is: {}", email);
 
-// The real power of enums in Rust comes from the ability to attach data to each variant
-// This allows us to guarantee that certain values are only ever present when a certain variant is used
-// allowing the compiler to catch many bugs at compile time
-enum SocketStatus {
-    // We can mix and match different types of data
-    // We can have a variant with no data
-    Init,
-    // We can have a variant with a single unnamed piece of data
-    Open(UdpSocket),
-    // We can have a variant with multiple named pieces of data (much like a struct)
-    Error { error: String, code: u32 },
-    Closed,
-}
+    // If we create a struct
+    struct Point {
+        x: i32,
+        y: i32,
+    }
 
-// The final grouping type is a tuple
-// It is rarely usually declared as a return type of function or used as a generic parameter
-// We can however create a type alias
-// In future use they Point type will mean a tuple of two i32 values
-type EndPoint = (IpAddr, Port);
+    // And then create an instance of the struct
+    let point = Point { x: 1, y: 2 };
 
-// Ok, now let's define some basic behavior for a struct
-// Simple as can be
-pub struct ManagedUpdSocket {
-    socket: UdpSocket,
-    status: SocketStatus,
-}
+    // We can use the update syntax to create a new instance of the struct
+    // This keeps all old values and only updates the ones we specify
+    // This is useful when we have a struct with many fields
+    let new_point = Point { x: 3, ..point };
 
-// Now lets define some behavior for our struct
-impl ManagedUpdSocket {
-    // Rust does not have any concept of constructors
-    // Instead we define a function that returns an instance of the struct
-    // It is idiomatic to name this function new and have it return Self
-    // In the context of a struct Self is the type we are implementing on
-    pub fn new() -> Self {
-        Self {
-            socket: (),
-            status: SocketStatus::Init,
+    // We can implement an associated function for the struct
+    impl Point {
+        // This is an associated function
+        // New is a common name for a function that creates a new instance of a struct
+        fn new(x: i32, y: i32) -> Self {
+            Self { x, y }
         }
     }
 
-    // We can also define methods that take a reference to self
-    // This is similar to the pointer in other languages
-    // As we want to change the state of the struct we take a mutable reference
-    pub fn open(&mut self) {
-        self.status = SocketStatus::Open(());
-    }
+    // We can now create a new instance of the struct like this
+    let point = Point::new(1, 2);
 
-    // Alternatively we can take ownership of self
-    // This is useful when we want to consume the struct
-    // The concept of ownership will be covered in the next chapter
-    pub fn close(mut self) {
-        // We can't use self after this line
-        self.status = SocketStatus::Closed;
-    }
-
-    // Finally we take advantage of our state
-    pub fn send(&mut self, person: &Person, end_point: &EndPoint) -> Result<(), String> {
-        // We can match on the status of the socket
-        // Ignore the & for now
-        // The match statement is similar to a switch statement in other languages
-        // It allows us to match on the value of a variable and execute code based on that
-        // All branches need to be exhaustive, meaning we need to cover all possible values
-        // If we want to ignore a value we can use the _ pattern, as this will match anything
-        match &self.status {
-            SocketStatus::Init => Err("Socket is not open yet".to_string()),
-            SocketStatus::Open(socket) => {
-                // This is the only scope that we can use the socket in
-
-                // And for the sake of the example we will check if the person is too young
-                // and have the socket go into an error state if they are
-                if person.age < 18 {
-                    self.status = SocketStatus::Error {
-                        error: "Person was too young to send".to_string(),
-                        code: 1,
-                    };
-                    // Here we need an explicit return. We could omit it,
-                    // but then we would need to put the Ok(()) into an else block and omit the semicolon
-                    // That would make the return type of the "if expression" a Result<(), String>
-                    return Err("Person is too young to send".to_string());
-                }
-
-                // Let utilize the tuple we got
-                let (ip, port) = end_point;
-
-                // But we don't have a real socket, so we will just return Ok
-                println!(
-                    "Sending person: {:?} using socket {:?} to {}:{}",
-                    person, socket, ip, port
-                );
-                Ok(())
-            }
-            SocketStatus::Error { error, code } => Err(format!(
-                "Socket is in an error state: {} with code: {}",
-                error, code
-            )),
-            SocketStatus::Closed => Err("Socket is closed".to_string()),
+    // We can also implement methods for the struct
+    impl Point {
+        // This is a method
+        fn distance(&self, other: &Point) -> f64 {
+            let x = (self.x - other.x).pow(2) as f64;
+            let y = (self.y - other.y).pow(2) as f64;
+            (x + y).sqrt()
         }
     }
-}
 
-// Now lets put this all to use
-// Here we define a function that will use the structs we defined
-// It has no parameters and returns a String
-// It is also public
-pub fn my_function() -> String {
-    // Let's create a new Person
-    let person = Person {
-        name: "John Doe".to_string(),
-        age: 30,
-        marital_status: MaritalStatus::Single,
-    };
+    // We can now call the method like this
+    let point1 = Point::new(1, 1);
+    let point2 = Point::new(4, 5);
+    let distance = point1.distance(&point2);
+    println!("The distance between the two points is: {}", distance);
 
-    // Let's create a new socket
-    let mut socket = ManagedUpdSocket::new();
+    // We can create a tuple struct
+    // A tuple struct is a struct that has unnamed fields
+    struct Color(u8, u8, u8);
 
-    // And create a new endpoint
-    let end_point: EndPoint = ("localhost".to_string(), 8080);
+    // We can create an instance of the tuple struct like this
+    let black = Color(0, 0, 0);
 
-    // Try to send the person
-    match socket.send(&person, &end_point) {
-        Ok(_) => println!("Person was sent successfully"),
-        Err(e) => println!("Failed to send person: {}", e),
+    // We can access the fields of the tuple struct like this
+    println!("The first value of the color is: {}", black.0);
+
+    // Rust has first class support for tuples
+    // We can create a tuple like this
+    let tuple = (1, 2, 3);
+
+    // We can destructure the tuple like this
+    let (a, b, c) = tuple;
+
+    // Tuples are useful when we want to return multiple values from a function
+    // To be frank, returning a Point would have made more sense here
+    fn find_middle(point1: Point, point2: Point) -> (i32, i32) {
+        ((point1.x + point2.x) / 2, (point1.y + point2.y) / 2)
     }
-
-    // Let's open the socket
-    socket.open();
-
-    // Try to send the person again
-    match socket.send(&person, &end_point) {
-        Ok(_) => println!("Person was sent successfully"),
-        Err(e) => println!("Failed to send person: {}", e),
-    }
-
-    // Now lets make the person too young
-    let young_person = Person {
-        name: "Jack Doe".to_string(),
-        age: 17,
-        marital_status: MaritalStatus::Divorced,
-    };
-
-    // Try to send the person again
-    match socket.send(&young_person, &end_point) {
-        Ok(_) => println!("Person was sent successfully"),
-        Err(e) => println!("Failed to send person: {}", e),
-    }
-
-    // Even if we try to send an appropriate person the socket is in an error state
-    match socket.send(&person, &end_point) {
-        Ok(_) => println!("Person was sent successfully"),
-        Err(e) => println!("Failed to send person: {}", e),
-    }
-
-    // Let's close the socket
-    socket.close();
-
-    // And finally, you can deconstruct a struct
-    let Person {
-        name,
-        age,
-        marital_status,
-    } = person;
-
-    println!(
-        "The person is called {}, is {} years old and is {:?}",
-        name, age, marital_status
-    );
-
-    // Well, that's it for now. Let's return something nice to the main function
-
-    "Hello from a function in a module".to_string()
 }
