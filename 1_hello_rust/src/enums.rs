@@ -131,7 +131,7 @@ pub fn enumerated_fun() {
     // To show this off you will find a VERY simple socket implementation in simpleSocket.rs
 
     // Lets create a new socket
-    let mut socket = simple_sockett::Socket::new();
+    let mut socket = simple_socket::Socket::new();
 
     // Lets actually use the real IpAddr type from the standard library
     let ip = std::net::IpAddr::V4(std::net::Ipv4Addr::new(127, 0, 0, 1));

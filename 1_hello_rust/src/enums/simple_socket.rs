@@ -15,6 +15,7 @@ impl Socket {
         Socket::Uninitialized
     }
 
+    // Don't be bothered by all the mut and &, we will cover them later
     pub fn connect(&mut self, ip: IpAddr, port: u16) {
         // We can use if let to match on a single variant
         // This is the alternative to match
@@ -29,7 +30,7 @@ impl Socket {
         }
     }
 
-    pub fn send_data(&self, data: &[u8]) -> Result<(), &str> {
+    pub fn send_data(&self, _data: &[u8]) -> Result<(), &str> {
         // Based on the state of the socket we can send data
         // Notice that we have a return type of Result but
         // no return keyword. This is because match is an expression
