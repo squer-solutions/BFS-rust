@@ -69,9 +69,9 @@ fn main() {
     // Let's now do two things at once:
     // Call a function from another module
     traits::trait_fun();
-    generics::generic_fun();
-
     structs::structured_fun();
+    enums::enumerated_fun();
+    generics::generic_fun();
 }
 
 // This is how we import a module

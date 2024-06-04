@@ -35,4 +35,15 @@ pub fn generic_fun() {
     let (first, second) = first_two_elements(list, list2);
     println!("The first element of the first list is: {}", first);
     println!("The first element of the second list is: {}", second);
+
+    // We can also have generic structs
+    struct Container<T> {
+        child: T,
+    }
+
+    // Finally, we can set trait bounds for generics
+    fn is_greater_than<T: PartialOrd>(left: T, right: T) -> bool {
+        // We can use the functions of the trait, like cmp
+        left > right
+    }
 }
