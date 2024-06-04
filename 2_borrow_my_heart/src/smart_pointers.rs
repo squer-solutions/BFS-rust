@@ -117,9 +117,9 @@ pub fn smart_pointers() {
             next: None,
             prev: Some(std::rc::Rc::downgrade(&first)),
         }));
-        first.borrow_mut().next = Some(second.clone());
+        first.borrow_mut().next = Some(second);
 
-        return first;
+        first
     }
 
     let first = gen_list();
