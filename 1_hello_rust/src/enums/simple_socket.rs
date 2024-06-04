@@ -25,6 +25,8 @@ impl Socket {
     }
 
     pub fn disconnect(&mut self, reason: String) {
+        // You can see the familiar .. syntax here.
+        // It is used to indicated that we don't care about any of the fields
         if let Socket::Connected { .. } = self {
             *self = Socket::Disconnected(reason);
         }
@@ -43,5 +45,7 @@ impl Socket {
             }
             _ => Err("Cannot send data, socket is not connected"),
         }
+
+        // This could also have been achieved with an if let and an else branch
     }
 }

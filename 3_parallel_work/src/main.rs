@@ -89,4 +89,22 @@ fn main() {
     // From RwLock to Condvar, from AtomicBool to AtomicUsize
     // There is no point in going over them all. The Rust documentation is very good
     // All the sync documentation lives at: https://doc.rust-lang.org/std/sync/index.html
+
+    // Not everything can be shared across threads
+    // For example Rc cannot be shared across threads
+
+    let rc = std::rc::Rc::new(0);
+
+    // This will not compile
+    // let handle = std::thread::spawn(move || {
+    //     println!("The value of rc is: {}", rc);
+    // });
+    // If we think about it, this makes sense. Rc keeps an internal counter
+    // that is modified when we clone the Rc. This counter is not atomic
+    // and cannot be shared across threads
+
+    // This ability to be shared across threads is represented by the Send and Sync traits
+    // The nomicon(https://doc.rust-lang.org/nomicon/intro.html) tells us that:
+    // A type is Send if it is safe to send it to another thread.
+    // A type is Sync if it is safe to share between threads (T is Sync if and only if &T is Send).
 }

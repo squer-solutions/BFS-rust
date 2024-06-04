@@ -22,6 +22,7 @@ fn main() {
     // y = 3; // This will not compile
 
     // Numeric operations are done with the usual operators
+    // We can declare a variable as mutable with the mut keyword
     let mut z = x + y;
 
     // This is a macro, not a function Macros come in two flavors: declarative and procedural
@@ -65,6 +66,27 @@ fn main() {
     };
 
     println!("The result of the scope is: {}", scope_result); // Will print "HelloWorld"
+
+    // For collections we have a few options
+    // Arrays are fixed size and stack allocated
+    // They are of the form [T; N] where T is the type and N is the size
+    let array: [i32; 5] = [1, 2, 3, 4, 5];
+
+    let first = array[1]; // Accessing an element of an array is done with square brackets
+
+    // This will panic if the index is out of bounds
+    // array[7];
+
+    // If we want a dynamic collection we can use a Vec
+    // Vecs are heap allocated and growable
+    let mut vec = vec![1, 2, 3];
+    vec.push(1);
+    vec.push(2);
+
+    // We can access elements of a Vec with square brackets
+    vec[0] = 3;
+
+    // The contents of the Vec are now [3, 2, 3, 1, 2]
 
     // Let's now do two things at once:
     // Call a function from another module
