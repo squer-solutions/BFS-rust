@@ -1,3 +1,8 @@
 [workspace]
 
-members = ["1_hello_rust", "2_borrow_my_heart", "3_parallel_work"]
+members = [
+    "1_hello_rust",
+    "2_borrow_my_heart",
+    "3_parallel_work",
+    "4_iterators_and_closures",
+]
