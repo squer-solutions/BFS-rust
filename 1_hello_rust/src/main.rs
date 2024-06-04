@@ -72,6 +72,22 @@ fn main() {
     structs::structured_fun();
     enums::enumerated_fun();
     generics::generic_fun();
+
+    // One last thing, as we have seen, error handling is usually done with the Result type
+    // But sometimes an error is so catastrophic that it is better to panic
+    // A panic will unwind the stack and print an error message
+    // Unlike an exception in other languages, a panic is not meant to be caught (there are ways, but the are not recommended)
+    // In general the philosophy is as follows:
+    // - Use Result for recoverable errors
+    // - Use panic for unrecoverable errors, so things like out of memory, or some fundamental invariant being broken
+    // panic!("This is a panic message");
+
+    // The Result types has some convenience methods, like unwrap, which will return the value if it is Ok, and panic if it is Err
+    // This is useful for prototyping, but in production code it is better to handle the error
+    // The exception is calling unwrap on things that YOU know will never be an error
+
+    // There is no point in handling an error that will never happen
+    let int = "42".parse::<i32>().unwrap();
 }
 
 // This is how we import a module
