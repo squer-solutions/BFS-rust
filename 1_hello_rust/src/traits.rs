@@ -169,4 +169,27 @@ pub fn trait_fun() {
             content.my_function()
         );
     }
+
+    // Traits can also have blanket implementations
+    // This means that we can implement a trait for all types that implement another trait
+    trait ToCoolString {
+        fn to_cool_string(&self) -> String;
+    }
+
+    // We don't need to implement the trait for every type that implements ToString
+    impl<T> ToCoolString for T
+    where
+        T: ToString,
+    {
+        fn to_cool_string(&self) -> String {
+            format!("Cool {}", self.to_string())
+        }
+    }
+
+    let hey = "Hey";
+    println!("{}", hey.to_cool_string());
+    // i32 implements Display, and therefore also ToString
+    // Meaning that our blanket implementation works for i32
+    let number = 42;
+    println!("{}", number.to_cool_string());
 }
