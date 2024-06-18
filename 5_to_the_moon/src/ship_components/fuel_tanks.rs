@@ -1,0 +1,3 @@
+struct MainTank {}
+
+struct AuxTank {}
