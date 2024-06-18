@@ -71,6 +71,9 @@ fn main() {
 
     // Now we will take a look at smart pointers
     smart_pointers::smart_pointers();
+
+    // And finally lifetimes
+    lifetimes::lifetimes();
 }
 
 fn takes_ownership(s: String) {
@@ -86,4 +89,5 @@ fn change(s: &mut String) {
     s.push_str(", world!");
 }
 
+mod lifetimes;
 mod smart_pointers;
