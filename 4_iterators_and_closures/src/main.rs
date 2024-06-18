@@ -19,17 +19,17 @@ fn main() {
     // This iterator takes ownership of all values in the array
 
     // Iterators have a lot of methods that can be chained
-    // We can use the map method to transform the values
-    let iterator = iterator.map(|x| x * 2);
-    // We can use the filter method to filter the values
-    let iterator = iterator.filter(|x| x % 2 == 0);
-    // We can use the fold method to reduce the values
-    let sum = iterator.fold(0, |acc, x| acc + x);
+    let sum = iterator
+        .map(|x| x * 2)
+        .filter(|x| x % 2 == 0)
+        .fold(0, |acc, x| acc + x);
+
     println!("The sum of the even numbers in the array is: {}", sum);
 
     // Iterators are lazy, meaning they only do work when asked
     let v = vec![1, 2, 3, 4, 5];
     let iter = v.iter().map(|x| x * x).map(|x| {
+        // Side effect. Generally not recommended
         println!("The value in the iterator is: {}", x);
         x
     });
