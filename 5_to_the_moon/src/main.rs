@@ -1,5 +1,6 @@
 mod ship_components;
+mod simulation;
 
 fn main() {
-    println!("Hello, world!");
+    // Runt the simulation
 }
