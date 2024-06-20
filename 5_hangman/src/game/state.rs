@@ -31,3 +31,41 @@ impl GameState {
         self.word.chars().all(|c| self.guesses.contains(&c))
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_errors() {
+        let state = GameState {
+            word: "hello".to_string(),
+            guesses: HashSet::from_iter(vec!['a', 'b', 'c', 'd', 'e']),
+            max_errors: 5,
+        };
+
+        assert_eq!(state.errors(), 4);
+    }
+
+    #[test]
+    fn test_is_lost() {
+        let state = GameState {
+            word: "hello".to_string(),
+            guesses: HashSet::from_iter(vec!['a', 'b', 'c', 'd', 'e']),
+            max_errors: 3,
+        };
+
+        assert!(state.is_lost());
+    }
+
+    #[test]
+    fn test_is_won() {
+        let state = GameState {
+            word: "hello".to_string(),
+            guesses: HashSet::from_iter(vec!['h', 'e', 'l', 'o']),
+            max_errors: 5,
+        };
+
+        assert!(state.is_won());
+    }
+}

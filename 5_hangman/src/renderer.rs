@@ -53,3 +53,16 @@ fn mask_word(word: &str, guesses: &HashSet<char>) -> String {
         .map(|c| if guesses.contains(&c) { c } else { '_' })
         .collect()
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_mask_word() {
+        let word = "hello";
+        let guesses = HashSet::from_iter(vec!['l', 'o']);
+
+        assert_eq!(mask_word(word, &guesses), "__llo");
+    }
+}
