@@ -10,3 +10,4 @@ Implement a simple hangman game. The game should have the following features:
 - The game should display the letters that have been guessed
 - The game should display the number of attempts remaining
 - The game should display a message if the player wins or loses
+- The game should "render" its content to the console from a separate thread
