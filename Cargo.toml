@@ -5,4 +5,5 @@ members = [
     "2_borrow_my_heart",
     "3_parallel_work",
     "4_iterators_and_closures",
+    "5_hangman",
 ]
