@@ -96,6 +96,10 @@ impl PostRepository for Postgres {
             query = query.filter(published.eq(p));
         }
 
+        if let Some(a) = post_filter.author {
+            query = query.filter(author_id.eq(a));
+        }
+
         query.get_results(conn)?
             .into_iter()
             .map(DbPost::try_into).collect::<Result<Vec<Post>, Error>>().map_err(|e| e.into())
