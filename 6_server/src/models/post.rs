@@ -7,6 +7,7 @@ pub struct Post {
     pub title: Title,
     pub body: String,
     pub published: bool,
+    pub author: uuid::Uuid,
 }
 
 #[nutype(
@@ -20,6 +21,7 @@ pub struct Title(String);
 pub struct CreatePost {
     pub title: Title,
     pub body: String,
+    pub author: uuid::Uuid,
 }
 
 #[derive(Debug, Deserialize)]
@@ -27,10 +29,12 @@ pub struct UpdatePost {
     pub title: Option<Title>,
     pub body: Option<String>,
     pub published: Option<bool>,
+    pub author: Option<uuid::Uuid>,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct PostFilter {
     pub title: Option<String>,
     pub published: Option<bool>,
+    pub author: Option<uuid::Uuid>,
 }

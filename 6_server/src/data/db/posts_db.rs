@@ -16,6 +16,7 @@ struct DbPost {
     title: String,
     body: String,
     published: bool,
+    author_id: Uuid,
 }
 
 impl TryFrom<DbPost> for Post {
@@ -27,6 +28,7 @@ impl TryFrom<DbPost> for Post {
             title: Title::new(value.title)?,
             body: value.body,
             published: value.published,
+            author: value.author_id
         })
     }
 }

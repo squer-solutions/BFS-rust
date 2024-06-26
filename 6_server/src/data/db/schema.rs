@@ -6,6 +6,7 @@ diesel::table! {
         title -> Text,
         body -> Text,
         published -> Bool,
+        author_id -> Uuid,
     }
 }
 
@@ -16,6 +17,8 @@ diesel::table! {
         email -> Text,
     }
 }
+
+diesel::joinable!(posts -> users (author_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     posts,
