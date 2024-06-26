@@ -3,7 +3,7 @@ pub fn structured_fun() {
     // Structs allow you to create complex data structures
     // They are similar to classes in other languages
 
-    // We can create a struct like this
+    // We can define a struct
     struct User {
         username: String,
         email: String,
@@ -11,7 +11,7 @@ pub fn structured_fun() {
         active: bool,
     }
 
-    // We can create an instance of the struct like this
+    // We can create an instance of the struct
     let user1 = User {
         email: "office@squer.io".to_string(),
         username: "squer".to_string(),
@@ -19,10 +19,10 @@ pub fn structured_fun() {
         sign_in_count: 1,
     };
 
-    // We can access the fields of the struct like this
+    // We can access the fields of the struct
     println!("The username of the user is: {}", user1.username);
 
-    // We can destructure the struct like this
+    // We can destructure the struct
     let User {
         email,
         username,
@@ -33,7 +33,7 @@ pub fn structured_fun() {
     // Now we can use the variables
     println!("The email of the user is: {}", email);
 
-    // If we create a struct
+    // If we define a struct
     struct Point {
         x: i32,
         y: i32,
@@ -76,7 +76,7 @@ pub fn structured_fun() {
     println!("The distance between the two points is: {}", distance);
 
     // We can create a tuple struct
-    // A tuple struct is a struct that has unnamed fields
+    // A tuple struct is a struct with unnamed fields
     struct Color(u8, u8, u8);
 
     // We can create an instance of the tuple struct like this
