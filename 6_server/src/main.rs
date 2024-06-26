@@ -16,7 +16,7 @@ pub mod config;
 #[tokio::main]
 async fn main() {
     tracing_subscriber::fmt::init();
-    dotenvy::dotenv().ok();
+    let _ = dotenvy::dotenv();
 
     let config = Config::init_from_env().expect("Failed to load config");
     let addr = SocketAddr::new(IpAddr::V4(config.host.parse().expect("Bad IP Addr")), config.port);
