@@ -1,5 +1,6 @@
 use axum::response::IntoResponse;
 use axum::http::StatusCode;
+use tracing::error;
 use crate::data::data_errors::DataError;
 
 impl IntoResponse for DataError {
@@ -7,7 +8,10 @@ impl IntoResponse for DataError {
         match self {
             DataError::NotFound => StatusCode::NOT_FOUND.into_response(),
             DataError::Duplicate => StatusCode::CONFLICT.into_response(),
-            DataError::InternalServerError(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
+            DataError::InternalServerError(_) => {
+                error!("Internal server error, {:?}", self);
+                StatusCode::INTERNAL_SERVER_ERROR.into_response()
+            },
         }
     }
 }

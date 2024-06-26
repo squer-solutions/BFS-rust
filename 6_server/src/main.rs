@@ -1,7 +1,7 @@
 use std::net::{IpAddr, SocketAddr};
 
 use envconfig::Envconfig;
-
+use tracing::log::info;
 use crate::config::Config;
 use crate::data::db::Postgres;
 use crate::server::define_app;
@@ -26,6 +26,8 @@ async fn main() {
     let app = define_app(AppState::new(postgres.clone(), postgres.clone()));
 
     let listener = tokio::net::TcpListener::bind(addr).await.expect("Failed to bind to address");
+
+    info!("Server listening on: {}", addr.to_string());
 
     axum::serve(listener, app).await.expect("Failed to start server");
 }
