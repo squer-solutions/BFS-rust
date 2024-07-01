@@ -165,10 +165,10 @@ pub fn trait_fun() {
         // We can no longer use our function
         // print(*element);
 
-        print_dyn(element);
+        print_dyn(element.as_ref());
     }
 
-    fn print_dyn(content: Box<dyn MyTrait>) {
+    fn print_dyn(content: &dyn MyTrait) {
         // In this scope we can use the functions of the trait
         // But nothing else
         println!(
