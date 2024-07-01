@@ -96,19 +96,20 @@ pub fn enumerated_fun() {
     // Both option and result have a lot of convenience methods
     // Like unwrap, expect, map, and many more
 
-    // We can define our own error type
+    // We can define our own error type for use with Result
     #[derive(Debug)]
     enum MyError {
         Not1(i32),
+        MathError,
     }
 
     // We define the return type as Result<T, E> where T and E are generic types
     // T is the type of the value we want to return
     // E is the type of the error
     // We will look at generics later
-    fn check_if_one(n: i32) -> Result<(), MyError> {
+    fn check_if_one(n: i32) -> Result<i32, MyError> {
         if n == 1 {
-            Ok(())
+            Ok(n)
         } else {
             Err(MyError::Not1(n))
         }
@@ -124,6 +125,7 @@ pub fn enumerated_fun() {
         // We can match in a match
         Err(e) => match e {
             MyError::Not1(actual) => println!("The number is not 1, it is: {}", actual),
+            _ => println!("Some other error"),
         },
     }
 

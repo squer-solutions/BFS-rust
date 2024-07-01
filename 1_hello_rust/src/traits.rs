@@ -28,6 +28,7 @@ pub fn trait_fun() {
     let maybe: Option<MyType> = None;
 
     // We can use the unwrap_or method to get the value of the Option or a default value
+    // Note, if MyType did not implement Default, this method would not be available
     let my_type = maybe.unwrap_or_default();
 
     // In rust you will often have types that contain the same/similar data but
@@ -146,7 +147,7 @@ pub fn trait_fun() {
     // disallows certain optimizations, but makes functions more flexible
 
     // To demonstrate this, we will create a vector of trait objects
-    // A trait object is a pointer to an object that implements a trait
+    // A trait object is a pointer to an object that implements a trait and a pointer to its vtable
     // The concrete type is erased, and the vtable is used to call the correct function
 
     impl MyTrait for Rgb {
@@ -159,7 +160,7 @@ pub fn trait_fun() {
     let my_type = MyType { value: 0 };
 
     // Do not be confused by the Box, it is a smart pointer that we will talk about later
-    let mut vec: Vec<Box<dyn MyTrait>> = Vec::new();
+    let vec: Vec<Box<dyn MyTrait>> = vec![Box::new(rgb), Box::new(my_type)];
     for element in vec {
         // We can no longer use our function
         // print(*element);
@@ -185,6 +186,7 @@ pub fn trait_fun() {
 
     // The T is a generic type parameter, we will cover them later
     impl<T> ToCoolString for T
+    // We specify that we want to implement the trait for all types that implement ToString
     where
         T: ToString,
     {

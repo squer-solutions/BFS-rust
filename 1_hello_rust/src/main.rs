@@ -1,3 +1,5 @@
+#![allow(warnings)]
+
 // The main function is the entry point of a Rust program
 // It takes no arguments, and returns nothing by default
 fn main() {
@@ -21,7 +23,6 @@ fn main() {
     // But we cannot reassign it
     // y = 3; // This will not compile
 
-    // Numeric operations are done with the usual operators
     // We can declare a variable as mutable with the mut keyword
     let mut z = x + y;
 
@@ -64,7 +65,7 @@ fn main() {
         a.to_string() + " " + b
     };
 
-    println!("The result of the scope is: {}", scope_result); // Will print "HelloWorld"
+    println!("The result of the scope is: {}", scope_result); // Will print "Hello World"
 
     // For collections, we have a few options
     // Arrays are fixed size

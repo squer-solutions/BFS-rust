@@ -51,7 +51,11 @@ pub fn structured_fun() {
     impl Point {
         // This is an associated function
         // New is a common name for a function that creates a new instance of a struct
+        // Inside an impl block, Self refers to the type the impl block is for
         fn new(x: i32, y: i32) -> Self {
+            // Since the variable names are the same as the field names we can use the field init shorthand
+            // Saving us from writing:
+            // Self { x: x, y: y }
             Self { x, y }
         }
     }
@@ -61,8 +65,10 @@ pub fn structured_fun() {
 
     // We can also implement methods for the struct
     impl Point {
-        // This is a method
+        // This is a method. Methods take a self, &self or &mut self as the first parameter
         fn distance(&self, other: &Point) -> f64 {
+            // The as keyword allows us to cast between primitives
+            // This is not the c# style of casting, but a conversion with strict rules
             let x = (self.x - other.x).pow(2) as f64;
             let y = (self.y - other.y).pow(2) as f64;
             (x + y).sqrt()
