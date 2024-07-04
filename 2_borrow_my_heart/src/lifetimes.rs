@@ -1,5 +1,11 @@
 pub fn lifetimes() {
+    // Lifetimes are the mechanism by with Rust ensures that references are always valid
+    // A reference to a value may never outlive the value it references
+    // Usually, the compiler can infer the lifetimes of references
     // Sometimes it is necessary to specify the lifetimes of references
+
+    // This function will not compile because the compiler doesn't know what
+    // lifetime the returned reference will have
 
     // fn longest_bad(s1: &str, s2: &str) -> &str {
     //     if s1.len() > s2.len() {
@@ -9,12 +15,13 @@ pub fn lifetimes() {
     //     }
     // }
 
+    // Therefore we need to specify the lifetimes of the references
     // This is done using the 'a syntax
 
     // This is a function that takes two references and returns the longest one
     // The longest one could be either s1 or s2
-    // The compiler isn't doesn't know how long the references will live
-    // So we need to specify that the references will live for the same amount of time
+    // The compiler can't tell, what the lifetime of the returned reference will be
+    // So we need to specify that the returned reference may not outlive s1 and s2
     fn longest<'a>(s1: &'a str, s2: &'a str) -> &'a str {
         if s1.len() > s2.len() {
             s1
@@ -32,17 +39,22 @@ pub fn lifetimes() {
     // This will not work because the strings have different lifetimes
     // s2 is created inside the block and will be dropped at the end of the block
     // And despite that s1 would be returned, the lifetimes for s1 and s2 are equivalent
-    // due to the function definition. In such a case, the compiler takes the shortest lifetime
+    // due to the function definition.
+    // The compiler will always take the shorter lifetime
 
-    // let s1 = String::from("hello but way longer than the other string");
+    // let s1 = String::from("hello but way longer than the other string"); // s1 valid
     // let longest = {
-    //     let s2 = String::from("world but shorter");
-    //     longest(&s1, &s2)
+    //     let s2 = String::from("world but shorter");  //s1 & s2 valid
+    //     longest(&s1, &s2)                            // s1 & s2 valid
+    //     // s2 is dropped here                        // s2 dropped
     // };
+    // println!("The longest string is: {}", longest); // longest could reference s2, therefore invalid
 
-    // Lifetime annotations are always required when using references in signatures
+
+
+    // Lifetime annotations are required when returning a reference from a function
+    // It should make intuitive sense, that this requires at least one reference to be passed in.
     // But in obvious cases, the compiler can elide the annotations
-    // The following function signature is equivalent to the one above
     fn find_in_list(list: &Vec<i32>, target: i32) -> Option<&i32> {
         for item in list {
             if *item == target {
@@ -52,7 +64,7 @@ pub fn lifetimes() {
         None
     }
 
-    // The following function signature is equivalent to the one above
+    // The following function signature is equivalent to the one above (minus the name)
     fn find_in_list_annotated<'a>(list: &'a Vec<i32>, target: i32) -> Option<&'a i32> {
         for item in list {
             if *item == target {
@@ -87,7 +99,7 @@ pub fn lifetimes() {
     println!("The excerpt is: {}", excerpt.part);
 
     // The reason we have been using String::from is because string literals have the 'static lifetime
-    // This means that they will always be available for the duration of the program, so they have
+    // This means that they will be available for the duration of the program, so they have
     // the longest possible lifetime
 
     // This will compile even if both lifetime annotations are 'a
