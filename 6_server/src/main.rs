@@ -1,5 +1,5 @@
 use std::net::{IpAddr, SocketAddr};
-
+use std::str::FromStr;
 use envconfig::Envconfig;
 use tracing::log::info;
 use crate::config::Config;
@@ -19,7 +19,8 @@ async fn main() {
     let _ = dotenvy::dotenv();
 
     let config = Config::init_from_env().expect("Failed to load config");
-    let addr = SocketAddr::new(IpAddr::V4(config.host.parse().expect("Bad IP Addr")), config.port);
+    let address = IpAddr::from_str(&config.host).expect("Bad Address");
+    let addr = SocketAddr::new(address, config.port);
 
     let postgres = Postgres::new(config.db).expect("Failed to connect to Postgres");
 
