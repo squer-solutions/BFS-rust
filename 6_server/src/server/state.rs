@@ -1,39 +1,36 @@
 use std::sync::Arc;
 
+use crate::data::repo_trait::DataRepository;
 use crate::data::repositories::post_repository::PostRepository;
 use crate::data::repositories::user_repository::UserRepository;
+use crate::services::{PostRepositoryProvider, ServiceProvider, UserRepositoryProvider};
 
 #[derive(Clone)]
-pub struct AppState<UR: UserRepository, PR: PostRepository> {
-    pub user_repository: Arc<UR>,
-    pub posts_repository: Arc<PR>,
+pub struct AppState {
+    pub user_repository: Arc<dyn UserRepository>,
+    pub posts_repository: Arc<dyn PostRepository>,
 }
 
-impl<UR: UserRepository, PR: PostRepository> AppState<UR, PR> {
-    pub fn new(ur: UR, pr: PR) -> Self {
+
+impl<T: DataRepository> From<T> for AppState {
+    fn from(repo: T) -> Self {
         AppState {
-            user_repository: Arc::new(ur),
-            posts_repository: Arc::new(pr),
+            user_repository: Arc::new(repo.clone()),
+            posts_repository: Arc::new(repo),
         }
     }
 }
 
-pub trait UserRepositoryProvider: Clone + Send + Sync + 'static {
-    fn user_repository(&self) -> Arc<impl UserRepository>;
-}
+impl ServiceProvider for AppState {}
 
-impl<UR: UserRepository, PR: PostRepository> UserRepositoryProvider for AppState<UR, PR> {
-    fn user_repository(&self) -> Arc<impl UserRepository> {
+impl UserRepositoryProvider for AppState {
+    fn user_repository(&self) -> Arc<dyn UserRepository> {
         self.user_repository.clone()
     }
 }
 
-pub trait PostRepositoryProvider: Clone + Send + Sync + 'static {
-    fn post_repository(&self) -> Arc<impl PostRepository>;
-}
-
-impl<UR: UserRepository, PR: PostRepository> PostRepositoryProvider for AppState<UR, PR> {
-    fn post_repository(&self) -> Arc<impl PostRepository> {
+impl PostRepositoryProvider for AppState {
+    fn post_repository(&self) -> Arc<dyn PostRepository> {
         self.posts_repository.clone()
     }
 }

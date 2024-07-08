@@ -7,7 +7,6 @@ pub async fn tracing_middleware(
     request: Request,
     next: Next,
 ) -> Response {
-
     let uri = request.uri().clone();
 
     info!("Request: {:?}", uri.path());

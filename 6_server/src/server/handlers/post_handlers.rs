@@ -2,9 +2,8 @@ use axum::extract::{Path, Query, State};
 use axum::Json;
 use axum::response::Result;
 
-use crate::data::repositories::post_repository::PostRepository;
 use crate::models::post::{CreatePost, Post, PostFilter, UpdatePost};
-use crate::server::state::PostRepositoryProvider;
+use crate::services::PostRepositoryProvider;
 
 pub async fn create_post<S: PostRepositoryProvider>(
     State(state): State<S>,

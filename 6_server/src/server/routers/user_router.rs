@@ -2,7 +2,7 @@ use axum::Router;
 use axum::routing::{get, post};
 
 use crate::server::handlers::user_handlers::{create_user, get_user};
-use crate::server::state::UserRepositoryProvider;
+use crate::services::UserRepositoryProvider;
 
 pub fn user_router<T: UserRepositoryProvider>(state: T) -> Router {
     Router::new()

@@ -1,10 +1,10 @@
 use anyhow::Error;
 use diesel::prelude::*;
 
-use crate::data::db::Postgres;
+use crate::data::data_errors::DataError;
+use crate::data::db::postgres::Postgres;
 use crate::data::db::schema::users;
 use crate::data::db::schema::users::table;
-use crate::data::data_errors::DataError;
 use crate::data::repositories::user_repository::UserRepository;
 use crate::models::user::{CreateUser, User, Username};
 

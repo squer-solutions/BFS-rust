@@ -2,10 +2,10 @@ use anyhow::Error;
 use diesel::prelude::*;
 use uuid::Uuid;
 
-use crate::data::db::Postgres;
+use crate::data::data_errors::DataError;
+use crate::data::db::postgres::Postgres;
 use crate::data::db::schema::posts;
 use crate::data::db::schema::posts::dsl::*;
-use crate::data::data_errors::DataError;
 use crate::data::repositories::post_repository::PostRepository;
 use crate::models::post::{CreatePost, Post, PostFilter, Title, UpdatePost};
 
@@ -28,7 +28,7 @@ impl TryFrom<DbPost> for Post {
             title: Title::new(value.title)?,
             body: value.body,
             published: value.published,
-            author: value.author_id
+            author: value.author_id,
         })
     }
 }

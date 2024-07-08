@@ -1,16 +1,18 @@
 use std::net::{IpAddr, SocketAddr};
 use std::str::FromStr;
+
 use envconfig::Envconfig;
 use tracing::log::info;
+
 use crate::config::Config;
-use crate::data::db::Postgres;
-use crate::server::define_app;
-use crate::server::state::AppState;
+use crate::data::db::postgres::Postgres;
+use crate::server::app::define_app;
 
 pub mod data;
 pub mod server;
 pub mod models;
 pub mod config;
+pub mod services;
 
 
 #[tokio::main]
@@ -24,7 +26,7 @@ async fn main() {
 
     let postgres = Postgres::new(config.db).expect("Failed to connect to Postgres");
 
-    let app = define_app(AppState::new(postgres.clone(), postgres.clone()));
+    let app = define_app(postgres.into());
 
     let listener = tokio::net::TcpListener::bind(addr).await.expect("Failed to bind to address");
 

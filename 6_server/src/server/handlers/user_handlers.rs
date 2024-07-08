@@ -1,9 +1,8 @@
 use axum::extract::{Path, State};
 use axum::Json;
 
-use crate::data::repositories::user_repository::UserRepository;
 use crate::models::user::{CreateUser, User};
-use crate::server::state::UserRepositoryProvider;
+use crate::services::UserRepositoryProvider;
 
 pub async fn create_user<S: UserRepositoryProvider>(
     State(state): State<S>,
@@ -51,7 +50,7 @@ mod test {
     }
 
     impl UserRepositoryProvider for Provider {
-        fn user_repository(&self) -> Arc<impl UserRepository> {
+        fn user_repository(&self) -> Arc<dyn UserRepository> {
             self.repo.clone()
         }
     }
