@@ -1,6 +1,3 @@
-use std::net::{IpAddr, SocketAddr};
-use std::str::FromStr;
-
 use envconfig::Envconfig;
 use tracing::log::info;
 
@@ -21,13 +18,12 @@ async fn main() {
     let _ = dotenvy::dotenv();
 
     let config = Config::init_from_env().expect("Failed to load config");
-    let address = IpAddr::from_str(&config.host).expect("Bad Address");
-    let addr = SocketAddr::new(address, config.port);
 
-    let postgres = Postgres::new(config.db).expect("Failed to connect to Postgres");
+    let postgres = Postgres::new(&config.db).expect("Failed to connect to Postgres");
 
     let app = define_app(postgres.into());
 
+    let addr = config.to_socket_addr();
     let listener = tokio::net::TcpListener::bind(addr).await.expect("Failed to bind to address");
 
     info!("Server listening on: {}", addr.to_string());

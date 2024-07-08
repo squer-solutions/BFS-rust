@@ -11,8 +11,8 @@ pub struct Postgres {
 }
 
 impl Postgres {
-    pub fn new(conf: DbConfig) -> Result<Self, anyhow::Error> {
-        let manager = ConnectionManager::<PgConnection>::new(conf.url);
+    pub fn new(conf: &DbConfig) -> Result<Self, anyhow::Error> {
+        let manager = ConnectionManager::<PgConnection>::new(&conf.url);
         manager.connect()?;
         let pool = Pool::builder().build(manager)?;
 
