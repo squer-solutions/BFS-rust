@@ -9,3 +9,4 @@ members = [
     "5_hangman",
     "6_server"
 ]
+resolver = "2"
