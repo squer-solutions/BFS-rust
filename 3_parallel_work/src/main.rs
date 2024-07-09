@@ -86,26 +86,39 @@ fn main() {
     let data = data.lock().unwrap();
     println!("The data is: {}", *data);
 
-    // There are lots of different smart pointers used for concurrency
-    // From RwLock to Condvar, from AtomicBool to AtomicUsize
-    // There is no point in going over them all. The Rust documentation is very good
-    // All the sync documentation lives at: https://doc.rust-lang.org/std/sync/index.html
+    // So far this is not very different from other languages
+    // Rust however encodes thread safety in the type system
+    // In particular it uses two marker traits Send and Sync
 
-    // Not everything can be shared across threads
-    // For example Rc cannot be shared across threads
+    // These are automatically implemented by the compiler for types that conform to certain rules
+    // For example, Send is implemented for types that are safe to send to another thread
+    // This includes all primitive types.
+    // Types that are not send may for example contain thread local data
 
-    let rc = std::rc::Rc::new(0);
+    // Sync is implemented for types that are safe to share between threads
+    // Meaning that a T is only Sync if &T is Send
+    // This applies to all primitive types.
+    // Any type that provides interior mutability that is not thread safe will not be Sync
 
-    // This will not compile
-    // let handle = std::thread::spawn(move || {
-    //     println!("The value of rc is: {}", rc);
-    // });
-    // If we think about it, this makes sense. Rc keeps an internal counter
-    // that is modified when we clone the Rc. This counter is not atomic
-    // and cannot be shared across threads
-
-    // This ability to be shared across threads is represented by the Send and Sync traits
-    // The nomicon(https://doc.rust-lang.org/nomicon/intro.html) tells us that:
+    // In general Send any Sync can be summed up as:
     // A type is Send if it is safe to send it to another thread.
     // A type is Sync if it is safe to share between threads (T is Sync if and only if &T is Send).
+
+    // Thanks to this we can use the type system to prevent many concurrency issues
+
+    // Rc contains a non-atomic counter, so it is not thread safe. This means that
+    // sharing it between threads is not safe. Notably, Rc is
+    // let data = std::rc::Rc::new(0);
+    // let d1 = data.clone();
+    // let d2 = data.clone();
+    // let j = std::thread::spawn(move || {
+    //     println!("The value of d1 is: {}", d1);
+    // });
+
+    // There are lots of different types pointers used for concurrency that
+    // allow mutability in a thread safe way
+    // Smart Pointers such as Mutex and RwLock
+    // Or atomic types
+    // There is no point in going over them all. The Rust documentation is very good
+    // All the sync documentation lives at: https://doc.rust-lang.org/std/sync/index.html
 }
