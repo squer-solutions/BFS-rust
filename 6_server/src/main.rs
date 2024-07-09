@@ -26,7 +26,7 @@ async fn main() {
     let addr = config.to_socket_addr();
     let listener = tokio::net::TcpListener::bind(addr).await.expect("Failed to bind to address");
 
-    info!("Server listening on: {}", addr.to_string());
+    info!("Server listening on: {}", addr);
 
     axum::serve(listener, app).await.expect("Failed to start server");
 }
