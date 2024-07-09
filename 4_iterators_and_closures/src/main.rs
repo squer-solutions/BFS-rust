@@ -66,4 +66,19 @@ fn main() {
 
     square_x();
     println!("The value of x is: {}", x);
+
+    // Closures can capture variables from the environment
+    let x = "Hello".to_string();
+
+    // This closure captures x by reference
+    let c = |y: String| x.to_string() + &y;
+    let a = c(" World".to_string());
+    println!("The value of a is: {}", a);
+
+    // This closure captures x by value
+    let c = move |y: &str| x + y;
+
+    let res = c(" World Too");
+
+    println!("The value of res is: {}", res);
 }

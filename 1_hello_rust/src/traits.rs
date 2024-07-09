@@ -1,5 +1,5 @@
 pub fn trait_fun() {
-    // Lets look at some traits
+    // Let's look at some traits
 
     // Traits are conceptually similar to interfaces in other languages
     // They define behavior of a type
@@ -7,8 +7,8 @@ pub fn trait_fun() {
     // While with enums every member is always known, traits allow any type
     // that implements the trait to be used in its place (conditions apply)
 
-    // The standart library has a trait called Default
-    // It is used to define a default value for a type
+    // The standard library has a trait called Default
+    // It is used to initialize a type with a default value
 
     struct MyType {
         value: i32,
@@ -23,11 +23,12 @@ pub fn trait_fun() {
     // We can now create a new instance of MyType with the default value
     let my_type = MyType::default();
 
-    // Default is useful, not because it is very complicated, but because it is used in many places
+    // Default is useful because it is used in many places
 
     let maybe: Option<MyType> = None;
 
     // We can use the unwrap_or method to get the value of the Option or a default value
+    // Note, if MyType did not implement Default, this method would not be available
     let my_type = maybe.unwrap_or_default();
 
     // In rust you will often have types that contain the same/similar data but
@@ -80,6 +81,7 @@ pub fn trait_fun() {
     // Some traits do not need to be implemented manually
     // For example the Debug and Clone trait
 
+    // They can be derived
     #[derive(Debug, Clone)]
     struct MyType2 {
         value: i32,
@@ -92,9 +94,9 @@ pub fn trait_fun() {
     let my_type2 = my_type.clone();
 
     // Some more types from the standard library are
-    // Copy, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug, Clone, and many more
+    // Copy, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug, Clone, ...
 
-    // Of course we can also define our own traits
+    // Of course, we can also define our own traits
     trait MyTrait {
         // We define a function signature
         fn my_function(&self) -> u8;
@@ -122,6 +124,8 @@ pub fn trait_fun() {
     println!("The result of my_function2 is: {}", result);
 
     // We can use traits as a parameter to a function
+    // But we cannot use the trait as a type, since it isn't one
+    // Instead we use the impl keyword, meaning that we want a concrete type that implements the trait
     fn print(content: impl MyTrait) {
         // In this scope we can use the functions of the trait
         // But nothing else
@@ -134,14 +138,17 @@ pub fn trait_fun() {
     // We can now call the function with any type that implements ToString
     print(my_type);
 
-    // Now, there is another keyword besides impl that we can use in function signatures
-    // It is dyn
+    // Now, there is another keyword besides impl that we can use in function signatures, dyn
 
-    // dyn is "complicated"
     // It is used to define a trait object, meaning that the compiler no longer knows the type
-    // of the object at compile time.
+    // of the object at compile time. With impl the compiler will find the concrete type during
+    // compilation and generate the code for each type that is used. With dyn the compiler will
+    // generate a vtable and use that to call the functions at runtime. This is slower, and
+    // disallows certain optimizations, but makes functions more flexible
 
-    // This can happen when you store different types in a collection
+    // To demonstrate this, we will create a vector of trait objects
+    // A trait object is a pointer to an object that implements a trait and a pointer to its vtable
+    // The concrete type is erased, and the vtable is used to call the correct function
 
     impl MyTrait for Rgb {
         fn my_function(&self) -> u8 {
@@ -153,15 +160,15 @@ pub fn trait_fun() {
     let my_type = MyType { value: 0 };
 
     // Do not be confused by the Box, it is a smart pointer that we will talk about later
-    let mut vec: Vec<Box<dyn MyTrait>> = Vec::new();
+    let vec: Vec<Box<dyn MyTrait>> = vec![Box::new(rgb), Box::new(my_type)];
     for element in vec {
         // We can no longer use our function
         // print(*element);
 
-        print_dyn(element);
+        print_dyn(element.as_ref());
     }
 
-    fn print_dyn(content: Box<dyn MyTrait>) {
+    fn print_dyn(content: &dyn MyTrait) {
         // In this scope we can use the functions of the trait
         // But nothing else
         println!(
@@ -172,12 +179,14 @@ pub fn trait_fun() {
 
     // Traits can also have blanket implementations
     // This means that we can implement a trait for all types that implement another trait
+
     trait ToCoolString {
         fn to_cool_string(&self) -> String;
     }
 
-    // We don't need to implement the trait for every type that implements ToString
+    // The T is a generic type parameter, we will cover them later
     impl<T> ToCoolString for T
+    // We specify that we want to implement the trait for all types that implement ToString
     where
         T: ToString,
     {

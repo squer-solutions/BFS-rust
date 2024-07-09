@@ -1,3 +1,5 @@
+#![allow(warnings)]
+
 // The main function is the entry point of a Rust program
 // It takes no arguments, and returns nothing by default
 fn main() {
@@ -21,17 +23,15 @@ fn main() {
     // But we cannot reassign it
     // y = 3; // This will not compile
 
-    // Numeric operations are done with the usual operators
     // We can declare a variable as mutable with the mut keyword
     let mut z = x + y;
 
-    // This is a macro, not a function Macros come in two flavors: declarative and procedural
-    // For now we don't really care how or why they work
-    println!("Hello, world! I just calculated x + y and it is: {}", z);
+    // This is a macro. You can tell because it ends with an exclamation mark
+    println!("Hello, world! I just calculated x + y and it is: {}", z); // Will print 3
 
     // Because we used mut we can reassign z
     z = 4;
-    println!("I reassigned z and it now stores: {}", z);
+    println!("I reassigned z and it now stores: {}", z); // Will print 4
 
     // This creates a new variable x that shadows the previous one
     // Logically the old x is still in scope, but lexically it impossible to access it
@@ -48,10 +48,10 @@ fn main() {
         println!("The new value of x in the new scope is: {}", x); // Will print 3
     }
 
-    // The x from the scope exists neither logically nor lexically in the outer scope
+    // The x from the inner scope exists neither logically nor lexically in the outer scope
     println!("The value of x outside the scope is still: {}", x); // Will print 22
 
-    // Scopes are evaluated
+    // Scopes can be used as expressions
     let scope_result = {
         // Static strings from our code are of type &'static str
         // We can convert them to a String with the to_string() method
@@ -65,16 +65,17 @@ fn main() {
         a.to_string() + " " + b
     };
 
-    println!("The result of the scope is: {}", scope_result); // Will print "HelloWorld"
+    println!("The result of the scope is: {}", scope_result); // Will print "Hello World"
 
-    // For collections we have a few options
-    // Arrays are fixed size and stack allocated
+    // For collections, we have a few options
+    // Arrays are fixed size
     // They are of the form [T; N] where T is the type and N is the size
     let array: [i32; 5] = [1, 2, 3, 4, 5];
 
     let first = array[1]; // Accessing an element of an array is done with square brackets
 
     // This will panic if the index is out of bounds
+    // A panic is a runtime error that will stop the program
     // array[7];
 
     // If we want a dynamic collection we can use a Vec
@@ -88,11 +89,11 @@ fn main() {
 
     // The contents of the Vec are now [3, 2, 3, 1, 2]
 
-    // Let's now do two things at once:
-    // Call a function from another module
-    traits::trait_fun();
+    // The following functions are from different modules, these are declared using the mod keyword
+    // A module is a file or a directory with an `mod.rs` file
     structs::structured_fun();
     enums::enumerated_fun();
+    traits::trait_fun();
     generics::generic_fun();
 
     // One last thing, as we have seen, error handling is usually done with the Result type
@@ -112,8 +113,7 @@ fn main() {
     let int = "42".parse::<i32>().unwrap();
 }
 
-// This is how we import a module
-// Such a module is either a file or a directory with an `mod.rs` file
+// This is how we declare a module
 mod enums;
 mod generics;
 mod structs;

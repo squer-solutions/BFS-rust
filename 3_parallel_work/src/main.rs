@@ -1,14 +1,15 @@
 fn main() {
     // One of the biggest selling points of Rust is its safety
-    // Trough a very strict type system Rust can prevent many
+    // Through a very strict type system Rust can prevent many
     // common mistakes, in particular when it comes to concurrency
 
     // Concurrent (and conflicting) memory modification is impossible in Rust
-    // Race conditions are also impossible in Rust
+    // Data races are also impossible in Rust
 
-    // Rust cannot prevent all concurrency issues, deadlocks are still possible (as they must be)
+    // Rust cannot prevent all concurrency issues, deadlocks
+    // and race conditions are still possible (as they must be)
 
-    // Lets look at the most basic example of concurrency
+    // Let's look at the most basic example of concurrency
 
     // We can spawn a new thread using the std::thread::spawn function
     // The spawn function takes a closure that will be executed in the new thread
@@ -57,8 +58,8 @@ fn main() {
 
     // We can also use shared memory between threads
 
-    // For this we need two smart pointes Arc and Mutex
-    // Arc is the Atomic version of RC, it allows us to copy the pointer between threads
+    // For this we need two smart pointers Arc and Mutex
+    // Arc is the Atomic version of RC, it allows us to copy the Mutex between threads
     let data = std::sync::Arc::new(std::sync::Mutex::new(0));
 
     let mut handles = vec![];

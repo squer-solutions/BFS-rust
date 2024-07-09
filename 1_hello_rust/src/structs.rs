@@ -3,7 +3,7 @@ pub fn structured_fun() {
     // Structs allow you to create complex data structures
     // They are similar to classes in other languages
 
-    // We can create a struct like this
+    // We can define a struct
     struct User {
         username: String,
         email: String,
@@ -11,7 +11,7 @@ pub fn structured_fun() {
         active: bool,
     }
 
-    // We can create an instance of the struct like this
+    // We can create an instance of the struct
     let user1 = User {
         email: "office@squer.io".to_string(),
         username: "squer".to_string(),
@@ -19,10 +19,10 @@ pub fn structured_fun() {
         sign_in_count: 1,
     };
 
-    // We can access the fields of the struct like this
+    // We can access the fields of the struct
     println!("The username of the user is: {}", user1.username);
 
-    // We can destructure the struct like this
+    // We can destructure the struct
     let User {
         email,
         username,
@@ -33,7 +33,7 @@ pub fn structured_fun() {
     // Now we can use the variables
     println!("The email of the user is: {}", email);
 
-    // If we create a struct
+    // If we define a struct
     struct Point {
         x: i32,
         y: i32,
@@ -51,7 +51,11 @@ pub fn structured_fun() {
     impl Point {
         // This is an associated function
         // New is a common name for a function that creates a new instance of a struct
+        // Inside an impl block, Self refers to the type the impl block is for
         fn new(x: i32, y: i32) -> Self {
+            // Since the variable names are the same as the field names we can use the field init shorthand
+            // Saving us from writing:
+            // Self { x: x, y: y }
             Self { x, y }
         }
     }
@@ -61,8 +65,10 @@ pub fn structured_fun() {
 
     // We can also implement methods for the struct
     impl Point {
-        // This is a method
+        // This is a method. Methods take a self, &self or &mut self as the first parameter
         fn distance(&self, other: &Point) -> f64 {
+            // The as keyword allows us to cast between primitives
+            // This is not the c# style of casting, but a conversion with strict rules
             let x = (self.x - other.x).pow(2) as f64;
             let y = (self.y - other.y).pow(2) as f64;
             (x + y).sqrt()
@@ -76,7 +82,7 @@ pub fn structured_fun() {
     println!("The distance between the two points is: {}", distance);
 
     // We can create a tuple struct
-    // A tuple struct is a struct that has unnamed fields
+    // A tuple struct is a struct with unnamed fields
     struct Color(u8, u8, u8);
 
     // We can create an instance of the tuple struct like this

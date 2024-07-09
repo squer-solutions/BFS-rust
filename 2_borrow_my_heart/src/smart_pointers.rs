@@ -1,20 +1,21 @@
 // Here we will be looking at how smart pointers work in Rust
 
-// Usually, pointer isn Rust are denoted using the & symbol
+// Usually, pointers in Rust are denoted using the & symbol
 // This means that the value is a reference to another value (a pointer)
 
 // Sometimes this is not enough, and we need more advanced features
-// This is where smart pointers come in
 
-// Smart pointers are data structures that act like pointers but have additional metadata and capabilities
-// They always implement the Deref and Drop traits (we will get to what traits are later)
+// Smart pointers are data structures that act like pointers but may have additional metadata and
+// or capabilities
+// By implementing the Deref trait, they can act like regular references
 
 use std::{
-    boxed,
-    cell::RefCell,
-    mem,
-    rc::{Rc, Weak},
+    cell::RefCell
+    ,
+    rc::Rc,
 };
+use std::rc::Weak;
+use crate::smart_pointers::dll::{Dll, DllElement};
 
 pub fn smart_pointers() {
     // A box is a smart pointer that allows us to store data on the heap
@@ -22,9 +23,9 @@ pub fn smart_pointers() {
     // memory on the stack and then moving the value into the heap. This is
     // usually optimized away by the compiler, but can lead to stack overflow.
     // There are workarounds for this, but they are not in the scope for now.
-    let boxed = boxed::Box::new(5);
+    let boxed = Box::new(5);
 
-    // We can also dereference the box
+    // Despite the box owning the i32, we can dereference it and get the contained value
     println!("The value of the box is: {}", *boxed);
 
     // We can also pass the box to a function
@@ -32,7 +33,7 @@ pub fn smart_pointers() {
     takes_reference(&boxed);
 
     // A very common use case for boxes is when we have a recursive data structure
-    // This struct wont compile because it is infinitely sized
+    // This struct won't compile because it is infinitely sized
     // struct BadListElement {
     //    value: i32,
     //    next: Option<BadListElement>,
@@ -42,17 +43,16 @@ pub fn smart_pointers() {
     // Now the size of the struct is known at compile time
     struct ListElement {
         value: i32,
-        next: Option<boxed::Box<ListElement>>,
+        next: Option<Box<ListElement>>,
     }
 
     // Box is a fairly simple smart pointer, but there are more advanced ones
     // like Rc, Arc, Mutex, and RefCell.
 
-    // Lets look at RC
     // Rc is a reference counted smart pointer
 
     // We can create a new Rc
-    let rc = std::rc::Rc::new(5);
+    let rc = Rc::new(5);
 
     // We can clone the Rc
     // The underlying value is not cloned
@@ -69,8 +69,8 @@ pub fn smart_pointers() {
 
     // To be able to mutate the Rc we can use the RefCell smart pointer
     // RefCell is a smart pointer that allows us to mutate the value inside it
-    // even if it is immutable. This is called interior mutability
-    let value = std::rc::Rc::new(std::cell::RefCell::new(5));
+    // even if the pointer is immutable. This is called interior mutability
+    let value = Rc::new(RefCell::new(5));
     let value2 = value.clone();
     let value3 = value.clone();
 
@@ -87,7 +87,7 @@ pub fn smart_pointers() {
     // let mut1 = value.borrow_mut();
     // let mut2 = value.borrow_mut();
     // This will compile (scary, right?)
-    // println!("The value of the RefCell is: {} and: {}", *mut1, *mut2);#
+    // println!("The value of the RefCell is: {} and: {}", *mut1, *mut2);
     // But it will panic at runtime
     // Meaning that we have to be very careful when using RefCell (or just not use it)
 
@@ -98,61 +98,27 @@ pub fn smart_pointers() {
     // We can solve this by using a weak pointer
     // A weak pointer is a smart pointer that doesn't increment the reference count
 
-    struct DllElement {
-        value: i32,
-        next: Option<Rc<RefCell<DllElement>>>,
-        prev: Option<Weak<RefCell<DllElement>>>,
+    // Look at the implementation of the Dll and the DllElement
+    let mut list = Dll::new(&vec![1, 2, 3, 4]);
+
+    let third = list.ref_at_index(2).unwrap();
+    let fourth = list.ref_at_index(3).unwrap();
+
+    match third.upgrade() {
+        Some(value) => println!("The value of the third element is: {:?}", value.borrow()),
+        None => println!("The third element has been removed"),
     }
 
-    fn gen_list() -> Rc<RefCell<DllElement>> {
-        // Lets create a doubly linked list
-        let first = Rc::new(RefCell::new(DllElement {
-            value: 1,
-            next: None,
-            prev: None,
-        }));
+    list.drop_after_index(1);
 
-        let second = Rc::new(RefCell::new(DllElement {
-            value: 2,
-            next: None,
-            prev: Some(std::rc::Rc::downgrade(&first)),
-        }));
-        first.borrow_mut().next = Some(second);
-
-        first
+    match fourth.upgrade() {
+        Some(value) => println!("The value of the fourth element is: {:?}", value.borrow()),
+        None => println!("The fourth element has been dropped"),
     }
 
-    let first = gen_list();
-
-    // We can now traverse the list
-    let mut current = first.clone();
-    loop {
-        println!("The value of the element is: {}", current.borrow().value);
-
-        let next = current.borrow().next.clone();
-
-        match next {
-            Some(next) => {
-                current = next;
-            }
-            None => break,
-        }
-    }
-
-    // The list will be freed when the last strong reference is dropped
-    let first = gen_list();
-
-    let second = first.borrow().next.clone().unwrap();
-
-    mem::drop(first);
-
-    let weak_first = second.borrow().prev.clone().unwrap();
-
-    // Second is weak, so it will be dropped
-    // Using upgrade we can maybe get a strong reference
-    match weak_first.upgrade() {
-        Some(_) => println!("The first element was not dropped"),
-        None => println!("The first element was dropped"),
+    match third.upgrade() {
+        Some(value) => println!("The value of the third element is: {:?}", value.borrow()),
+        None => println!("The third element has been dropped"),
     }
 }
 
@@ -167,3 +133,6 @@ fn takes_ownership(s: i32) {
 fn takes_mutable_reference(s: &mut i32) {
     *s += 1;
 }
+
+
+pub mod dll;

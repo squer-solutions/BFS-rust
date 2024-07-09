@@ -1,8 +1,7 @@
 pub fn generic_fun() {
-    // Rust has generics
-    // They work similar to how generics work in other languages
+    // Rust has generics (shocker)
 
-    // Lets say we have a function that returns the first element of a list
+    // Let's say we have a function that returns the first element of a list
     // We can write it like this
     fn first_element<T>(list: Vec<T>) -> T {
         for elem in list {
@@ -22,7 +21,6 @@ pub fn generic_fun() {
     println!("The first element of the list is: {}", first);
 
     // What happens here is that the compiler creates a new version of the function for each type
-    // Meaning, this is not dynamic dispatch, but static dispatch
 
     // We can also have multiple types
     fn first_two_elements<T, U>(list: Vec<T>, list2: Vec<U>) -> (T, U) {
