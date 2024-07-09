@@ -47,7 +47,7 @@ fn get_guess() -> char {
 }
 
 fn get_word() -> Result<String, Box<dyn Error>> {
-    let resp = reqwest::blocking::get("https://random-word-api.herokuapp.com/word?lang=en")?;
+    let resp = reqwest::blocking::get("https://random-word.ryanrk.com/api/en/word/random")?;
 
     let mut word: Vec<String> = resp.json()?;
 

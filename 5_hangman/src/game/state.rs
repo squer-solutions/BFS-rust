@@ -9,6 +9,7 @@ pub struct GameState {
 
 impl GameState {
     pub fn new(word: String, max_errors: u8) -> Self {
+        let word = word.to_lowercase();
         Self {
             word,
             guesses: HashSet::new(),

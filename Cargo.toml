@@ -7,6 +7,5 @@ members = [
     "3_parallel_work",
     "4_iterators_and_closures",
     "5_hangman",
-    "6_server"
+    "6_server",
 ]
-resolver = "2"
